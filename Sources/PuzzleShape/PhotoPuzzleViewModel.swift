@@ -12,7 +12,7 @@ public class PhotoPuzzleViewModel {
     public let image: UIImage
     public let numPieces: Int
     public let rows: Int
-    public  let columns: Int
+    public let columns: Int
     public var aspectRatio: Double
     public let viewWidth = 300.0
     public let viewHeight: Double

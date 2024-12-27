@@ -8,6 +8,8 @@
 import SwiftUI
 
 public struct PuzzlePiece: Shape {
+    public init() { }
+
     @MainActor private let path: Path = {
 #if os(macOS)
         Path(NSBezierPath.jigsawPiece.cgPath)
