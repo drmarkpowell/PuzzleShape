@@ -80,6 +80,36 @@ public class PhotoPuzzleViewModel {
     public func spacingBasedOnCubicRegressionFit(_ x: Double) -> Double {
         return 199.2 - 83.19048 * x + 14.60714 * x * x - 0.9166667 * x * x * x
     }
+
+    func CGPointDistanceSquared(from: CGPoint, to: CGPoint) -> CGFloat {
+        return (from.x - to.x) * (from.x - to.x) + (from.y - to.y) * (from.y - to.y)
+    }
+
+    func CGPointDistance(from: CGPoint, to: CGPoint) -> CGFloat {
+        return sqrt(CGPointDistanceSquared(from: from, to: to))
+    }
+
+    public func closestPieceIndex(_ location: CGPoint) -> Int {
+        var minDistance = 1_000_000.0
+        var closest = 0
+//        print("center offsets \(centerXOffset) \(centerYOffset)")
+        for i in 0..<pieces.count {
+            print("piece offsets \(pieces[i].xOffset) \(pieces[i].yOffset)")
+            let piecePoint = CGPoint(
+                x: viewWidth * 0.5 + pieces[i].xOffset + pieces[i].dragPosition.x,
+                y: viewHeight * 0.5 + pieces[i].yOffset + pieces[i].dragPosition.y
+            )
+            print("location: \(location) and piecePoint: \(piecePoint)")
+            let distance = CGPointDistance(from: piecePoint, to: location)
+            print("Distance of piece \(i) is \(distance)")
+            if distance < minDistance {
+                minDistance = distance
+                closest = i
+            }
+        }
+        print("closest piece is \(closest)")
+        return closest
+    }
 }
 
 public struct LoosePiece: Identifiable, Hashable {
@@ -89,6 +119,7 @@ public struct LoosePiece: Identifiable, Hashable {
     public let xOffset: Double
     public let yOffset: Double
     public let rotationDegrees: Double
+    public var dragPosition: CGPoint = .zero
 
     public func hash(into hasher: inout Hasher) {
         hasher.combine(row)
