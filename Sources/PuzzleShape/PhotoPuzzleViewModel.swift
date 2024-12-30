@@ -92,22 +92,17 @@ public class PhotoPuzzleViewModel {
     public func closestPieceIndex(_ location: CGPoint) -> Int {
         var minDistance = 1_000_000.0
         var closest = 0
-//        print("center offsets \(centerXOffset) \(centerYOffset)")
         for i in 0..<pieces.count {
-            print("piece offsets \(pieces[i].xOffset) \(pieces[i].yOffset)")
             let piecePoint = CGPoint(
                 x: viewWidth * 0.5 + pieces[i].xOffset + pieces[i].dragPosition.x,
                 y: viewHeight * 0.5 + pieces[i].yOffset + pieces[i].dragPosition.y
             )
-            print("location: \(location) and piecePoint: \(piecePoint)")
             let distance = CGPointDistance(from: piecePoint, to: location)
-            print("Distance of piece \(i) is \(distance)")
             if distance < minDistance {
                 minDistance = distance
                 closest = i
             }
         }
-        print("closest piece is \(closest)")
         return closest
     }
 }
