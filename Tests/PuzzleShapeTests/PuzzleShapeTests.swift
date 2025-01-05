@@ -21,21 +21,21 @@ struct PuzzlePiecesTests {
         let piece0 = puzzleViewModel.pieces[0] // upper left
         #expect(piece0.row == 1)
         #expect(piece0.column == 1)
-        #expect(abs(piece0.xOffset + spacing) < 0.000001)
-        #expect(abs(piece0.yOffset + spacing * 0.5) < 0.000001)
+        #expect(abs(piece0.xHomePosition + spacing) < 0.000001)
+        #expect(abs(piece0.yHomePosition + spacing * 0.5) < 0.000001)
 
         let piece2 = puzzleViewModel.pieces[2] // upper right
         #expect(piece2.row == 1)
         #expect(piece2.column == 3)
-        #expect(abs(piece2.xOffset - spacing) < 0.000001)
-        #expect(abs(piece2.yOffset + spacing * 0.5) < 0.000001)
+        #expect(abs(piece2.xHomePosition - spacing) < 0.000001)
+        #expect(abs(piece2.yHomePosition + spacing * 0.5) < 0.000001)
 
         let piece4 = puzzleViewModel.pieces[4] // lower center
         #expect(piece4.row == 2)
         #expect(piece4.column == 2)
 
-        #expect(abs(piece4.xOffset - 0.0) < 0.000001)
-        #expect(abs(piece4.yOffset) - spacing * 0.5 < 0.000001)
+        #expect(abs(piece4.xHomePosition - 0.0) < 0.000001)
+        #expect(abs(piece4.yHomePosition) - spacing * 0.5 < 0.000001)
     }
 
     @Test func puzzleRowsColumns() async throws {

@@ -19,7 +19,7 @@ public class PhotoPuzzleViewModel {
     public var pieces: [LoosePiece] = []
 
     // landspace images clip left of center
-    public  let centerXOffset: Double
+    public let centerXOffset: Double
     // portrait images clip above center
     public let centerYOffset: Double
     public let width: Double
@@ -50,13 +50,17 @@ public class PhotoPuzzleViewModel {
         for i in 1...numPieces {
             let column = Int(Double(i - 1).truncatingRemainder(dividingBy: Double(columns))) + 1
             let row = Int(Double(i - 1) / Double(columns)) + 1
+//            let onLeft = i <= numPieces / 2
+//            let pieceVerticalSpacing = viewHeight / Double(numPieces / 2)
+//            let yPosition = Double((i - 1) % (numPieces / 2)) + pieceVerticalSpacing + centerYOffset
             let piece = LoosePiece(
                 id: UUID(),
                 row: row,
                 column: column,
-                xOffset: xOffset(column),
-                yOffset: yOffset(row),
+                xHomePosition: xOffset(column),
+                yHomePosition: yOffset(row),
                 rotationDegrees: isOdd(row + column) ? 90.0 : 0.0
+//                ,dragPosition: CGPoint(x: onLeft ? -viewWidth * 0.5 : viewWidth * 0.5, y: yPosition)
             )
             pieces.append(piece)
         }
@@ -94,8 +98,8 @@ public class PhotoPuzzleViewModel {
         var closest = 0
         for i in 0..<pieces.count {
             let piecePoint = CGPoint(
-                x: viewWidth * 0.5 + pieces[i].xOffset + pieces[i].dragPosition.x,
-                y: viewHeight * 0.5 + pieces[i].yOffset + pieces[i].dragPosition.y
+                x: viewWidth * 0.5 + pieces[i].xHomePosition + pieces[i].dragPosition.x,
+                y: viewHeight * 0.5 + pieces[i].yHomePosition + pieces[i].dragPosition.y
             )
             let distance = CGPointDistance(from: piecePoint, to: location)
             if distance < minDistance {
@@ -107,21 +111,4 @@ public class PhotoPuzzleViewModel {
     }
 }
 
-public struct LoosePiece: Identifiable, Hashable {
-    public var id = UUID()
-    public let row: Int
-    public let column: Int
-    public let xOffset: Double
-    public let yOffset: Double
-    public let rotationDegrees: Double
-    public var dragPosition: CGPoint = .zero
 
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(row)
-        hasher.combine(column)
-    }
-
-    public static func == (lhs: LoosePiece, rhs: LoosePiece) -> Bool {
-        lhs.row == rhs.row && lhs.column == rhs.column
-    }
-}

@@ -61,7 +61,7 @@ public struct PhotoPuzzleBoard: View {
                                 anchor: .center
                             )
                         //position each piece where it belongs
-                            .offset(x: piece.xOffset, y: piece.yOffset)
+                            .offset(x: piece.xHomePosition, y: piece.yHomePosition)
 
                 }
                 .frame(width: viewModel.viewWidth, height: viewModel.viewHeight)
@@ -88,7 +88,7 @@ public struct PhotoPuzzleBoard: View {
                                 anchor: .center
                             )
                         //position each piece where it belongs
-                            .offset(x: piece.xOffset, y: piece.yOffset)
+                            .offset(x: piece.xHomePosition, y: piece.yHomePosition)
                     )
             }
         }
