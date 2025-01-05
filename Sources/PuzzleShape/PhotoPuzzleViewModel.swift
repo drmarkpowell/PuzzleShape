@@ -47,20 +47,33 @@ public class PhotoPuzzleViewModel {
         scale =  1.0 / maxLength
         spacing = 199.2 - 83.19048 * maxLength + 14.60714 * maxLength * maxLength - 0.9166667 * maxLength * maxLength * maxLength
 
+        var dragPositions: [CGPoint] = []
+        for i in 1...numPieces {
+            let halfNumPieces = ceil(Double(numPieces) * 0.5)
+            let column = Int(Double(i - 1).truncatingRemainder(dividingBy: Double(columns))) + 1
+            let row = Int(Double(i - 1) / Double(columns)) + 1
+            let onLeft = i <= numPieces / 2
+            let pieceVerticalSpacing = viewHeight / halfNumPieces
+            let xPosition = (onLeft ? -viewWidth * 0.5 : viewWidth * 0.5)
+            let yPosition = Double(i % Int(halfNumPieces)) * pieceVerticalSpacing - viewHeight * 0.35
+            dragPositions.append(CGPoint(x: xPosition, y: yPosition))
+        }
+        dragPositions.shuffle()
+
         for i in 1...numPieces {
             let column = Int(Double(i - 1).truncatingRemainder(dividingBy: Double(columns))) + 1
             let row = Int(Double(i - 1) / Double(columns)) + 1
-//            let onLeft = i <= numPieces / 2
-//            let pieceVerticalSpacing = viewHeight / Double(numPieces / 2)
-//            let yPosition = Double((i - 1) % (numPieces / 2)) + pieceVerticalSpacing + centerYOffset
             let piece = LoosePiece(
                 id: UUID(),
                 row: row,
                 column: column,
                 xHomePosition: xOffset(column),
                 yHomePosition: yOffset(row),
-                rotationDegrees: isOdd(row + column) ? 90.0 : 0.0
-//                ,dragPosition: CGPoint(x: onLeft ? -viewWidth * 0.5 : viewWidth * 0.5, y: yPosition)
+                rotationDegrees: isOdd(row + column) ? 90.0 : 0.0,
+                dragPosition: CGPoint(
+                    x: dragPositions[i - 1].x - xOffset(column),
+                    y: dragPositions[i - 1].y - yOffset(row)
+                )
             )
             pieces.append(piece)
         }
