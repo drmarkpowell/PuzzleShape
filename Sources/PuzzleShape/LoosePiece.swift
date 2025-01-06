@@ -14,6 +14,7 @@ public struct LoosePiece: Identifiable, Hashable, Equatable {
     public let yHomePosition: Double
     public let rotationDegrees: Double
     public var dragPosition: CGPoint = .zero
+    public var isRevealed = false
     public var closeToHome = false
     public var inPlace = false
 
