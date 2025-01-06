@@ -50,8 +50,6 @@ public class PhotoPuzzleViewModel {
         var dragPositions: [CGPoint] = []
         for i in 1...numPieces {
             let halfNumPieces = ceil(Double(numPieces) * 0.5)
-            let column = Int(Double(i - 1).truncatingRemainder(dividingBy: Double(columns))) + 1
-            let row = Int(Double(i - 1) / Double(columns)) + 1
             let onLeft = i <= numPieces / 2
             let pieceVerticalSpacing = viewHeight / halfNumPieces
             let xPosition = (onLeft ? -viewWidth * 0.5 : viewWidth * 0.5)

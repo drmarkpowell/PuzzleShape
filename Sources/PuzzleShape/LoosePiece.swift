@@ -6,7 +6,7 @@
 //
 import Foundation
 
-public struct LoosePiece: Identifiable, Hashable {
+public struct LoosePiece: Identifiable, Hashable, Equatable {
     public var id = UUID()
     public let row: Int
     public let column: Int
@@ -14,13 +14,14 @@ public struct LoosePiece: Identifiable, Hashable {
     public let yHomePosition: Double
     public let rotationDegrees: Double
     public var dragPosition: CGPoint = .zero
+    public var closeToHome = false
+    public var inPlace = false
 
     public func hash(into hasher: inout Hasher) {
-        hasher.combine(row)
-        hasher.combine(column)
+        hasher.combine(id)
     }
 
     public static func == (lhs: LoosePiece, rhs: LoosePiece) -> Bool {
-        lhs.row == rhs.row && lhs.column == rhs.column
+        lhs.id == rhs.id
     }
 }
