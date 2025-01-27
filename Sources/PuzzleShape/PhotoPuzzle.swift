@@ -21,9 +21,9 @@ public struct PhotoPuzzle: View {
             }
         }
         .task {
-            image = UIImage(named: "landscape", in: .module, compatibleWith: nil)
+            image = UIImage(named: "portrait", in: .module, compatibleWith: nil)
             if let image {
-                viewModel = PhotoPuzzleViewModel(image: image, numPieces: 5)
+                viewModel = PhotoPuzzleViewModel(image: image, numPieces: 40)
             }
         }
     }
@@ -69,28 +69,28 @@ public struct PhotoPuzzleBoard: View {
             }
             .compositingGroup()
 
-            ForEach(viewModel.pieces, id: \.self) { piece in
-                Image(uiImage: image)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: viewModel.viewWidth, height: viewModel.viewHeight)
-                    .clipShape(
-                        PuzzlePiece()
-                        //center the shape within the rectangular image
-                            .offset(
-                                x: viewModel.centerXOffset,
-                                y: viewModel.centerYOffset
-                            )
-                            .scale(viewModel.scale)
-                        //rotate every other piece to fit the pieces together
-                            .rotation(
-                                Angle(degrees: piece.rotationDegrees),
-                                anchor: .center
-                            )
-                        //position each piece where it belongs
-                            .offset(x: piece.xHomePosition, y: piece.yHomePosition)
-                    )
-            }
+//            ForEach(viewModel.pieces, id: \.self) { piece in
+//                Image(uiImage: image)
+//                    .resizable()
+//                    .aspectRatio(contentMode: .fit)
+//                    .frame(width: viewModel.viewWidth, height: viewModel.viewHeight)
+//                    .clipShape(
+//                        PuzzlePiece()
+//                        //center the shape within the rectangular image
+//                            .offset(
+//                                x: viewModel.centerXOffset,
+//                                y: viewModel.centerYOffset
+//                            )
+//                            .scale(viewModel.scale)
+//                        //rotate every other piece to fit the pieces together
+//                            .rotation(
+//                                Angle(degrees: piece.rotationDegrees),
+//                                anchor: .center
+//                            )
+//                        //position each piece where it belongs
+//                            .offset(x: piece.xHomePosition, y: piece.yHomePosition)
+//                    )
+//            }
         }
     }
 }

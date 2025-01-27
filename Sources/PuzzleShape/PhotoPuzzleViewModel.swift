@@ -9,32 +9,45 @@ import UIKit
 
 @Observable
 public class PhotoPuzzleViewModel {
-    public let image: UIImage
-    public let numPieces: Int
-    public let rows: Int
-    public let columns: Int
-    public var aspectRatio: Double
+    public var image: UIImage
+    public var numPieces: Int
+    public private(set) var rows = 1
+    public private(set) var columns = 1
+    public var aspectRatio = 1.0
     public let viewWidth = 300.0
-    public let viewHeight: Double
+    public private(set) var viewHeight = 0.0
     public var pieces: [LoosePiece] = []
 
-    // landspace images clip left of center
-    public let centerXOffset: Double
+    // landscape images clip left of center h
+    public private(set) var centerXOffset = 0.0
     // portrait images clip above center
-    public let centerYOffset: Double
-    public let width: Double
-    public let height: Double
+    public private(set) var centerYOffset = 0.0
+    public private(set) var width = 0.0
+    public private(set) var height = 0.0
 
-    public let maxLength: Double
-    public let scale: Double
-    public let spacing: Double
+    public private(set) var maxLength = 0.0
+    public private(set) var scale = 1.0
+    public private(set) var spacing = 0.0
+
+    var isTall: Bool { aspectRatio < 1 }
 
     public init(image: UIImage, numPieces: Int) {
         self.image = image
         self.numPieces = numPieces
+        setup(image, numPieces)
+    }
+
+    public func update(image: UIImage, numPieces: Int) {
+        self.image = image
+        self.numPieces = numPieces
+        setup(image, numPieces)
+    }
+
+    private func setup(_ image: UIImage, _ numPieces: Int) {
+        pieces.removeAll()
         width = image.size.width
         height = image.size.height
-        let aspect = width / height
+        let aspect = image.size.width / image.size.height
         viewHeight = viewWidth / aspect
         aspectRatio = aspect
         centerXOffset = aspect > 1 ? (viewWidth - viewHeight) * 0.5 : 0.0
@@ -45,7 +58,7 @@ public class PhotoPuzzleViewModel {
         maxLength = Double(max(rows, columns))
 
         scale =  1.0 / maxLength
-        spacing = 199.2 - 83.19048 * maxLength + 14.60714 * maxLength * maxLength - 0.9166667 * maxLength * maxLength * maxLength
+        spacing = spacingBasedOnCubicRegressionFit(maxLength)
 
         var dragPositions: [CGPoint] = []
         for i in 1...numPieces {
@@ -89,11 +102,17 @@ public class PhotoPuzzleViewModel {
         val % 2 == 1
     }
 
-    /// used these data  x: [2, 3, 4, 5, 6] y: [ 84, 56, 42, 33.5, 28]
+    /// used these data
+    /// landscape: x: [2, 3, 4, 5, 6] y: [ 84, 56, 42, 33.5, 28]
+    /// portrait x: [2, 3, 4, 5, 6] y: [ 112, 76, 56, 45, 32]
     /// x: number of puzzle pieces across, y: amount of spacing in points
     /// generated cubic regression fit using https://mycurvefit.com
     public func spacingBasedOnCubicRegressionFit(_ x: Double) -> Double {
-        return 199.2 - 83.19048 * x + 14.60714 * x * x - 0.9166667 * x * x * x
+        if isTall {
+            return 271.2 - 117.4286 * x + 21.92857 * x * x - 1.5 * x * x * x
+        } else {
+            return 199.2 - 83.19048 * x + 14.60714 * x * x - 0.9166667 * x * x * x
+        }
     }
 
     func CGPointDistanceSquared(from: CGPoint, to: CGPoint) -> CGFloat {
@@ -123,3 +142,42 @@ public class PhotoPuzzleViewModel {
 }
 
 
+public extension UIImage {
+    // Return new image that is either 4:3 or 3:4, padded if necessary to the ratio
+    func pad() -> UIImage {
+        let idealAspectRatio = 4.0 / 3.0
+        var width = size.width
+        var height = size.height
+        let tall = width < height
+        let aspectRatio = tall ? height / width : width / height
+        if tall { // a tall image
+            if aspectRatio < idealAspectRatio {
+                // not tall enough, pad height
+                height = width * idealAspectRatio
+            } else {
+                // not wide enough, pad width
+                width = height / idealAspectRatio
+            }
+        } else { // a wide image
+            if aspectRatio < idealAspectRatio {
+                // not wide enough, pad width
+                width = height * idealAspectRatio
+            } else {
+                // not tall enough, pad height
+                height = width / idealAspectRatio
+            }
+        }
+        let paddedImageSize = CGSize(width: width, height: height)
+        // Draw and return the resized UIImage
+        print("actual aspect ratio: \(width / height)")
+        let renderer = UIGraphicsImageRenderer(size: paddedImageSize)
+        let scaledImage = renderer.image { _ in
+            self.draw(in: CGRect(
+                origin: .zero,
+                size: paddedImageSize
+            ))
+        }
+
+        return scaledImage
+    }
+}
