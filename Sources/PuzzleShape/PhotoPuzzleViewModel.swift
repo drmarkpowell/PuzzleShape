@@ -16,6 +16,7 @@ public class PhotoPuzzleViewModel {
     public var aspectRatio = 1.0
     public let viewWidth = 300.0
     public private(set) var viewHeight = 0.0
+    // all the pieces that haven't yet been placed
     public var pieces: [LoosePiece] = []
 
     // landscape images clip left of center h
